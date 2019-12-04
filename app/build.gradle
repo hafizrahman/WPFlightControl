@@ -63,4 +63,40 @@ dependencies {
     // Dagger
     api "com.google.dagger:dagger:2.25.2"
     annotationProcessor 'com.google.dagger:dagger-compiler:2.25.2'
+
+    // Retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.6.1'
+}
+
+android.buildTypes.all { buildType ->
+    // Add properties named "wp.xxx" to our BuildConfig
+    def inputFile = checkGradlePropertiesFile()
+    def properties = loadPropertiesFromFile(inputFile)
+    properties.any { property ->
+        if (property.key.toLowerCase().startsWith("wp.")) {
+            buildType.buildConfigField "String", property.key.replace("wp.", "").replace(".", "_").toUpperCase(),
+                    "\"${property.value}\""
+        }
+        if (property.key.toLowerCase().startsWith("wp.res.")) {
+            buildType.resValue "string", property.key.replace("wp.res.", "").replace(".", "_").toLowerCase(),
+                    "${property.value}"
+        }
+    }
+}
+
+
+def checkGradlePropertiesFile() {
+    def inputFile = file("${rootDir}/gradle.properties")
+    if (!inputFile.exists()) {
+        throw new StopActionException("Build configuration file gradle.properties doesn't exist, follow README instructions")
+    }
+    return inputFile
+}
+
+static def loadPropertiesFromFile(inputFile) {
+    def properties = new Properties()
+    inputFile.withInputStream { stream ->
+        properties.load(stream)
+    }
+    return properties
 }
