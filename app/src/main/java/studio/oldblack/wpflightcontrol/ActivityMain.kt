@@ -9,14 +9,34 @@ import android.util.Log
 import kotlinx.android.synthetic.main.activity_main.*
 
 import net.openid.appauth.*
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKeys
+
+import studio.oldblack.wpflightcontrol.constants.*
+
+
 
 class ActivityMain : AppCompatActivity() {
 
     // real, current work below
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // EncryptedSharedPreferences
+        // Example from:
+        // https://developer.android.com/reference/androidx/security/crypto/EncryptedSharedPreferences
+        val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+        val sharedPreferences = EncryptedSharedPreferences.create(
+            WPFC_SHARED_PREFS_FILENAME,
+            masterKeyAlias,
+            this,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
+
+        // use the shared preferences and editor as you normally would
+        val editor = sharedPreferences.edit()
 
         //val mAuthVM = ViewModelAuth(application)
 
@@ -26,8 +46,8 @@ class ActivityMain : AppCompatActivity() {
             // Example from https://hackernoon.com/adding-oauth2-to-mobile-android-and-ios-clients-using-the-appauth-sdk-f8562f90ecff
             // First we build the ServiceConfiguration
             val serviceConfig = AuthorizationServiceConfiguration(
-                Uri.parse("https://public-api.wordpress.com/oauth2/authorize"),
-                Uri.parse("https://public-api.wordpress.com/oauth2/token"))
+                Uri.parse(WPFC_WPCOM_AUTH_ENDPOINT),
+                Uri.parse(WPFC_WPCOM_TOKEN_ENDPOINT))
 
             val authService = AuthorizationService(it.context)
             val authState = AuthState(serviceConfig)
@@ -37,7 +57,7 @@ class ActivityMain : AppCompatActivity() {
                 serviceConfig,
                 BuildConfig.OAUTH_APP_ID,
                 ResponseTypeValues.TOKEN,
-                Uri.parse("https://v2.atomicowl.blog/wpfp/"))
+                Uri.parse(WPFC_WPCOM_APP_REDIRECT))
             val authRequest = authRequestBuilder.build()
 
             // Third, we perform the AuthorizationRequest
@@ -59,9 +79,8 @@ class ActivityMain : AppCompatActivity() {
             authService.performAuthorizationRequest(authRequest, pendingIntent)
              */
             val safrIntent = authService.getAuthorizationRequestIntent(authRequest)
-            val DO_AUTH_REQUEST = 1337
             val action = "studio.oldblack.wpflightcontrol.appauth.HANDLE_AUTHORIZATION_RESPONSE"
-            startActivityForResult(safrIntent, DO_AUTH_REQUEST)
+            startActivityForResult(safrIntent, WPFC_WPCOM_AUTH_REQUEST_CODE)
 
 
         }
@@ -102,29 +121,4 @@ class ActivityMain : AppCompatActivity() {
         }
     }
 
-    override fun onNewIntent(intent: Intent) {
-        checkIntent(intent)
-    }
-
-    private fun checkIntent(intent: Intent?) {
-        if (intent != null) {
-            val action = intent.action
-            Log.i("Hafiz", "intent is not null $action")
-            if (!intent.hasExtra("USED_INTENT")) {
-                intent.putExtra("USED_INTENT", true)
-            }
-            when (action) {
-                "studio.oldblack.wpflightcontrol.appauth.HANDLE_AUTHORIZATION_RESPONSE" -> {
-                        if (!intent.hasExtra("USED_INTENT")) {
-                            intent.putExtra("USED_INTENT", true)
-                        }
-                    }
-            }// do nothing
-        }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        checkIntent(intent)
-    }
 }
