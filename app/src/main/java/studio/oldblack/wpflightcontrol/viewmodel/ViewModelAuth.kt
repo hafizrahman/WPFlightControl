@@ -6,5 +6,4 @@ import studio.oldblack.wpflightcontrol.repository.RepositoryAuth
 
 class ViewModelAuth(application: Application): AndroidViewModel(application) {
     val mAuthRepo = RepositoryAuth(application)
-    val somethingElse = mAuthRepo.whee()
 }

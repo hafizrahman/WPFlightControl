@@ -88,12 +88,11 @@ class ActivityMain : AppCompatActivity() {
         }
 
         // Loggers
-        /*
+
         Log.i("Hafiz", "What encodedFragment")
         for((k, v) in encodedFragmentValues) {
                 Log.i("maps", "$k = $v")
         }
-         */
 
         if(requestCode == 1337) {
             if(resultCode == Activity.RESULT_OK) {
