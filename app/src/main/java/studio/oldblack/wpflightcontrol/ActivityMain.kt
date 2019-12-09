@@ -13,10 +13,6 @@ import net.openid.appauth.*
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 
-import studio.oldblack.wpflightcontrol.constants.*
-
-
-
 class ActivityMain : AppCompatActivity() {
 
     lateinit var sharedPreferences: SharedPreferences
@@ -38,8 +34,11 @@ class ActivityMain : AppCompatActivity() {
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
 
-        val accessToken = sharedPreferences.getString(WPFC_SHARED_PREFS_KEY_AUTH_ACCESS_TOKEN, "none found")
+        val accessToken = sharedPreferences.getString(WPFC_SHARED_PREFS_KEY_AUTH_ACCESS_TOKEN, "none")
         Log.i("Hafiz", "Current access token is $accessToken")
+        if(accessToken.equals("none")) {
+            //open login activity
+        }
 
         //val mAuthVM = ViewModelAuth(application)
         // old work below
@@ -82,7 +81,9 @@ class ActivityMain : AppCompatActivity() {
              */
             val safrIntent = authService.getAuthorizationRequestIntent(authRequest)
             val action = "studio.oldblack.wpflightcontrol.appauth.HANDLE_AUTHORIZATION_RESPONSE"
-            startActivityForResult(safrIntent, WPFC_WPCOM_AUTH_REQUEST_CODE)
+            startActivityForResult(safrIntent,
+                WPFC_WPCOM_AUTH_REQUEST_CODE
+            )
         }
     }
 
