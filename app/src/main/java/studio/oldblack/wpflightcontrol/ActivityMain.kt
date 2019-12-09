@@ -34,14 +34,19 @@ class ActivityMain : AppCompatActivity() {
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
 
+        // Check if we have existing access token
+        // If not, open the login activity
         val accessToken = sharedPreferences.getString(WPFC_SHARED_PREFS_KEY_AUTH_ACCESS_TOKEN, "none")
         Log.i("Hafiz", "Current access token is $accessToken")
-        if(accessToken.equals("none")) {
+        if(!accessToken.equals("none")) {
             //open login activity
+            val intentForLogin = Intent(this, ActivityLogin::class.java)
+            startActivity(intentForLogin)
         }
 
         //val mAuthVM = ViewModelAuth(application)
-        // old work below
+
+        // If we're here, it means we have access token and can now display contents.
 
         auth_button.setOnClickListener {
             // Example from https://hackernoon.com/adding-oauth2-to-mobile-android-and-ios-clients-using-the-appauth-sdk-f8562f90ecff
@@ -85,7 +90,7 @@ class ActivityMain : AppCompatActivity() {
                 WPFC_WPCOM_AUTH_REQUEST_CODE
             )
         }
-    }
+}
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         val encodedFragment = data?.data?.encodedFragment
@@ -130,5 +135,4 @@ class ActivityMain : AppCompatActivity() {
             }
         }
     }
-
 }
