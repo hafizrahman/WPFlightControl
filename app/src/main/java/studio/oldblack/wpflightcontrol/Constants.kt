@@ -1,4 +1,4 @@
-package studio.oldblack.wpflightcontrol.constants
+package studio.oldblack.wpflightcontrol
 
 const val WPFC_SHARED_PREFS_FILENAME = "wpfc_prefs"
 const val WPFC_SHARED_PREFS_KEY_AUTH_ACCESS_TOKEN = "wpfc_prefs_key_token"
