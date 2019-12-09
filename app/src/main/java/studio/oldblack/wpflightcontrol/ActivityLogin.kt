@@ -104,6 +104,10 @@ class ActivityLogin : AppCompatActivity() {
         }
     }
 
+    // If back button is pressed during login activity, minimize the screen.
+    // The app can't function without login anyway, so we're not letting the
+    // user to go back any other activities before the login is completed.
+    // The code is from https://stackoverflow.com/a/26492794
     override fun onBackPressed() {
         moveTaskToBack(true)
     }
