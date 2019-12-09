@@ -7,7 +7,7 @@ import net.openid.appauth.*
 import studio.oldblack.wpflightcontrol.*
 import studio.oldblack.wpflightcontrol.BuildConfig
 
-class RepositoryAuth(val context: Context) {
+class RepositoryMain(val context: Context) {
 
     fun getAppAuthRequestIntent(context: Context) : Intent {
         // Example from https://hackernoon.com/adding-oauth2-to-mobile-android-and-ios-clients-using-the-appauth-sdk-f8562f90ecff
