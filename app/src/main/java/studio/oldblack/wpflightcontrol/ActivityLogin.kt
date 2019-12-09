@@ -11,6 +11,7 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys.*
 import kotlinx.android.synthetic.main.activity_login.*
 import net.openid.appauth.*
+import studio.oldblack.wpflightcontrol.viewmodel.ViewModelAuth
 
 class ActivityLogin : AppCompatActivity() {
 
@@ -20,6 +21,7 @@ class ActivityLogin : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
+        val mAuthVM = ViewModelAuth(application)
 
         // EncryptedSharedPreferences
         // Example from:
