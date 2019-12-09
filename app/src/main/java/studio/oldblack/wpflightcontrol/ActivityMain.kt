@@ -40,7 +40,7 @@ class ActivityMain : AppCompatActivity() {
         Log.i("Hafiz", "Current access token is $accessToken")
 
         // TODO: if access token exists, check its validity and force login if not valid
-        if(accessToken.equals("none")) {
+        if(!accessToken.equals("none")) {
             //open login activity
             val intentForLogin = Intent(this, ActivityLogin::class.java)
             startActivity(intentForLogin)

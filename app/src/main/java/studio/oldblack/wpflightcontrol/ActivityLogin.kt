@@ -100,8 +100,11 @@ class ActivityLogin : AppCompatActivity() {
                 }
 
                 Log.i("Hafiz", "fetched data saved,boss")
-
             }
         }
+    }
+
+    override fun onBackPressed() {
+        moveTaskToBack(true)
     }
 }
