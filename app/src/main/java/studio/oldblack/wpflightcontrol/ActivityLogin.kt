@@ -95,8 +95,12 @@ class ActivityLogin : AppCompatActivity() {
                     putString(WPFC_SHARED_PREFS_KEY_AUTH_ACCESS_TOKEN,  encodedFragmentValues["access_token"])
                     putString(WPFC_SHARED_PREFS_KEY_AUTH_EXPIRATION,    encodedFragmentValues["expires_in"])
                     putString(WPFC_SHARED_PREFS_KEY_AUTH_STATE,         encodedFragmentValues["state"])
+                    putString(WPFC_SHARED_PREFS_KEY_AUTH_COMPLETE_TIMESTAMP, System.currentTimeMillis().toString())
                     commit()
                 }
+
+                Log.i("Hafiz", "fetched data saved,boss")
+
             }
         }
     }
