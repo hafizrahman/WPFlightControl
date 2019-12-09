@@ -100,6 +100,10 @@ class ActivityLogin : AppCompatActivity() {
                 }
 
                 Log.i("Hafiz", "fetched data saved,boss")
+
+                // Open ActivityMain
+                val intent = Intent(this, ActivityLogin::class.java)
+                startActivity(intent)
             }
         }
     }
