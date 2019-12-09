@@ -34,30 +34,15 @@ class ActivityLogin : AppCompatActivity() {
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
+
         auth_login_button.setOnClickListener {
-            // Example from https://hackernoon.com/adding-oauth2-to-mobile-android-and-ios-clients-using-the-appauth-sdk-f8562f90ecff
-            // First we build the ServiceConfiguration
-            val serviceConfig = AuthorizationServiceConfiguration(
-                Uri.parse(WPFC_WPCOM_AUTH_ENDPOINT),
-                Uri.parse(WPFC_WPCOM_TOKEN_ENDPOINT))
-
-            val authService = AuthorizationService(it.context)
-            val authState = AuthState(serviceConfig)
-
-            // Second, we build the AuthorizationRequest
-            val authRequestBuilder = AuthorizationRequest.Builder(
-                serviceConfig,
-                BuildConfig.OAUTH_APP_ID,
-                ResponseTypeValues.TOKEN,
-                Uri.parse(WPFC_WPCOM_APP_REDIRECT))
-            val authRequest = authRequestBuilder.build()
-
-            val safrIntent = authService.getAuthorizationRequestIntent(authRequest)
-            startActivityForResult(safrIntent,
+            val authIntent = mAuthVM.getAppAuthRequestIntent(this)
+            startActivityForResult(authIntent,
                 WPFC_WPCOM_AUTH_REQUEST_CODE
             )
         }
     }
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         val encodedFragment = data?.data?.encodedFragment
