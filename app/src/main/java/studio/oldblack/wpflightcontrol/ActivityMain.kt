@@ -2,6 +2,7 @@ package studio.oldblack.wpflightcontrol
 
 import android.app.Activity
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -18,6 +19,8 @@ import studio.oldblack.wpflightcontrol.constants.*
 
 class ActivityMain : AppCompatActivity() {
 
+    lateinit var sharedPreferences: SharedPreferences
+
     // real, current work below
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +30,7 @@ class ActivityMain : AppCompatActivity() {
         // Example from:
         // https://developer.android.com/reference/androidx/security/crypto/EncryptedSharedPreferences
         val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
-        val sharedPreferences = EncryptedSharedPreferences.create(
+        sharedPreferences = EncryptedSharedPreferences.create(
             WPFC_SHARED_PREFS_FILENAME,
             masterKeyAlias,
             this,
@@ -35,11 +38,10 @@ class ActivityMain : AppCompatActivity() {
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
 
-        // use the shared preferences and editor as you normally would
-        val editor = sharedPreferences.edit()
+        val accessToken = sharedPreferences.getString(WPFC_SHARED_PREFS_KEY_AUTH_ACCESS_TOKEN, "none found")
+        Log.i("Hafiz", "Current access token is $accessToken")
 
         //val mAuthVM = ViewModelAuth(application)
-
         // old work below
 
         auth_button.setOnClickListener {
@@ -81,8 +83,6 @@ class ActivityMain : AppCompatActivity() {
             val safrIntent = authService.getAuthorizationRequestIntent(authRequest)
             val action = "studio.oldblack.wpflightcontrol.appauth.HANDLE_AUTHORIZATION_RESPONSE"
             startActivityForResult(safrIntent, WPFC_WPCOM_AUTH_REQUEST_CODE)
-
-
         }
     }
 
@@ -117,6 +117,15 @@ class ActivityMain : AppCompatActivity() {
             if(resultCode == Activity.RESULT_OK) {
                 // Yeah, what?
                 Log.i("Hafiz", "This is inside onActivityResult")
+
+                // Saving to sharedPreferences
+                // val editor = sharedPreferences.edit()
+                with (sharedPreferences.edit()) {
+                    putString(WPFC_SHARED_PREFS_KEY_AUTH_ACCESS_TOKEN,  encodedFragmentValues["access_token"])
+                    putString(WPFC_SHARED_PREFS_KEY_AUTH_EXPIRATION,    encodedFragmentValues["expires_in"])
+                    putString(WPFC_SHARED_PREFS_KEY_AUTH_STATE,         encodedFragmentValues["state"])
+                    commit()
+                }
             }
         }
     }
